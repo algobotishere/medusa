@@ -417,7 +417,8 @@ func (fw *FuzzerWorker) shrinkCallSequence(callSequence calls.CallSequence, shri
 		if utils.CheckContextDone(fw.fuzzer.ctx) {
 			return nil, nil
 		}
-
+		val, _ := valuegeneration.EncodeABIArgumentsToString(optimizedSequence[0].Call.DataAbiValues.Method.Inputs, optimizedSequence[0].Call.DataAbiValues.InputValues)
+		println("call before mutation", val)
 		// Recreate our current optimized sequence without the item at this index
 		possibleShrunkSequence, err := optimizedSequence.Clone()
 		if err != nil {
@@ -435,6 +436,9 @@ func (fw *FuzzerWorker) shrinkCallSequence(callSequence calls.CallSequence, shri
 		if err != nil {
 			return nil, err
 		}
+		println("validShrunkSequence", validShrunkSequence)
+		val, _ = valuegeneration.EncodeABIArgumentsToString(possibleShrunkSequence[0].Call.DataAbiValues.Method.Inputs, possibleShrunkSequence[0].Call.DataAbiValues.InputValues)
+		println("call after mutation", val)
 		// If this current sequence satisfied our conditions, set it as our optimized sequence.
 		if validShrunkSequence {
 			optimizedSequence = possibleShrunkSequence
